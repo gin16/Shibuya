@@ -73,3 +73,9 @@ crashlytics-build.properties
 
 # vscode
 .vscode/
+
+# Shibuya
+/Shibuya/
+
+# Photon
+/Assets/Photon/
