@@ -6,6 +6,7 @@ public class CameraManager : MonoBehaviour
 {
     static CameraManager main;
 
+    [SerializeField] Transform mainCameraParent;
     [SerializeField] Camera mainCamera;
     [SerializeField] Camera mapCamera;
 
@@ -24,6 +25,7 @@ public class CameraManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Game.Main == null) return;
         if (Input.GetKeyDown(KeyCode.C)) {
             SetActiveCamera(!mainCamera.enabled);
         }
@@ -43,8 +45,8 @@ public class CameraManager : MonoBehaviour
     /// </summary>
     /// <param name="parent">player</param>
     public static void SetMainCameraParent(Transform parent, Vector3 position) {
-        main.mainCamera.transform.parent = parent;
-        main.mainCamera.transform.localPosition = position;
+        main.mainCameraParent.parent = parent;
+        main.mainCameraParent.localPosition = position;
     }
 
     /// <summary>
@@ -60,5 +62,12 @@ public class CameraManager : MonoBehaviour
     public static void ForwardMainCamera(float amount) {
         if (amount > 0 && main.mainCamera.transform.localPosition.z < -2f) return;
         main.mainCamera.transform.Translate(Vector3.forward * amount);
+    }
+
+    /// <summary>
+    /// Called by Player
+    /// </summary>
+    public static void RotateMainCamera(float amount) {
+        main.mainCameraParent.Rotate(amount, 0f, 0f);
     }
 }

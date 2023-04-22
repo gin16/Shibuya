@@ -31,8 +31,13 @@ public class Parameter : MonoBehaviour
         return main.colors[index % main.colors.Length];
     }
 
-    [SerializeField] Slider sensitivitySlider;
-    public static float Sensitivity { get { return Mathf.Pow(2, main?.sensitivitySlider.value ?? 8); } }
+    [SerializeField] Slider horizontalSensitivitySlider;
+    [SerializeField] Toggle horizontalSensitivityToggle;
+    public static float HorizontalSensitivity { get { return Mathf.Pow(2, main?.horizontalSensitivitySlider.value ?? 8) * (main?.horizontalSensitivityToggle.isOn ?? true ? 1 : -1); } }
+
+    [SerializeField] Slider verticalSensitivitySlider;
+    [SerializeField] Toggle verticalSensitivityToggle;
+    public static float VerticalSensitivity { get { return Mathf.Pow(2, main?.verticalSensitivitySlider.value ?? 8) * (main?.verticalSensitivityToggle.isOn ?? true ? 1 : -1); } }
     
     public static int GroundLayer { get; private set; }
     public static int CoinLayer { get; private set; }

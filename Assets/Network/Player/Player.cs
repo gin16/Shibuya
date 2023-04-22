@@ -125,7 +125,10 @@ public class Player : NetworkBehaviour
 
     private void RotateWithMouseCursor() {
         float mouseX = Input.GetAxis("Mouse X");
-        transform.Rotate(Vector3.up, mouseX * Parameter.Sensitivity * Runner.DeltaTime, Space.World);
+        transform.Rotate(Vector3.up, mouseX * Parameter.HorizontalSensitivity * Runner.DeltaTime, Space.World);
+
+        float mouseY = Input.GetAxis("Mouse Y");
+        CameraManager.RotateMainCamera(mouseY * Parameter.VerticalSensitivity * Runner.DeltaTime);
     }
 
     private void MoveWithGravity() {
