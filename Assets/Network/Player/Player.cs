@@ -8,7 +8,7 @@ public class Player : NetworkBehaviour
 
     private NetworkTransform networkTransform;
     [HideInInspector] [Networked] public int PlayerId {get; set; } = -2;
-    [HideInInspector] [Networked] public string PlayerName {get; set; } = "";
+    [HideInInspector] [Networked(OnChanged = nameof(OnChangedName))] public string PlayerName {get; set; } = "";
     [Networked] private TickTimer lifeTimer { get; set; }
 
     [Networked, Capacity(256)]
@@ -216,5 +216,11 @@ public class Player : NetworkBehaviour
         Vector3 delta = transform.position - position;
         delta.y = 0f;
         nameText.transform.rotation = Quaternion.LookRotation(delta, Vector3.up);
+    }
+
+    public static void OnChangedName(Changed<Player> changed) {
+        if (Game.Main != null && Game.Main.Phase == GamePhase.Top) {
+            Game.Main.ShowResult();
+        }
     }
 }

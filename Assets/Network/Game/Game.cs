@@ -84,7 +84,7 @@ public class Game : NetworkBehaviour
         Debug.Log($"Phase: {Phase}");
         if (Phase == GamePhase.Top) {
             CameraManager.SetActiveCamera(false);
-            canvasManager.ShowResult(playerSpawner.players);
+            ShowResult();
             foreach (Coin coin in coins) {
                 coin.Show();
             }
@@ -99,6 +99,9 @@ public class Game : NetworkBehaviour
         canvasManager.SetActive(Phase);
     }
 
+    public void ShowResult() {
+        canvasManager.ShowResult(playerSpawner.players);
+    }
     public void OnClickInitGame() {
         if (Main == null) return;
         if (Busy) return;
