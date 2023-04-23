@@ -69,6 +69,7 @@ public class Coin : NetworkBehaviour
             yield return null;
         }
         PlayerId = (active ? -1 : -2);
+        Value = Random.Range(0, 1 << 30); // to invoke OnChangedPlayerId
         if (active) {
             transform.position = PositionManager.GetRandomPosition(1f);
         }
@@ -104,7 +105,7 @@ public class Coin : NetworkBehaviour
     /// </summary>
     public void Show() {
         if (PlayerId == -1) {
-            valueText.color = Color.white;
+            valueText.color = Color.black;
             valueText.text = "0";
             textObject.SetActive(true);
             gameObject.SetActive(true);
