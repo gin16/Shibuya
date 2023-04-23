@@ -72,6 +72,9 @@ public class CameraManager : MonoBehaviour
     /// Called by Player
     /// </summary>
     public static void RotateMainCamera(float amount) {
+        float angleX = main.mainCameraParent.localEulerAngles.x;
+        if (amount > 0 && angleX < 180f && angleX > 80f) return;
+        if (amount < 0 && angleX > 180f && angleX < 330f) return;
         main.mainCameraParent.Rotate(amount, 0f, 0f);
     }
 }

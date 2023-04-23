@@ -20,7 +20,6 @@ public class CanvasManager : MonoBehaviour
     [SerializeField] TMPro.TextMeshProUGUI nextText;
     [SerializeField] TMPro.TextMeshProUGUI remainingText;
     [SerializeField] TMPro.TextMeshProUGUI timeText;
-    [SerializeField] Image resultBG;
     [SerializeField] TMPro.TextMeshProUGUI resultNameText;
     [SerializeField] TMPro.TextMeshProUGUI resultScoreText;
 
@@ -63,17 +62,15 @@ public class CanvasManager : MonoBehaviour
         if (Game.Main.Phase == GamePhase.Game || Game.Main.Phase == GamePhase.Top) {
             if (Input.GetKeyDown(KeyCode.O)) {
                 optionCanvas.SetActive(!optionCanvas.activeSelf);
+                if (optionCanvas.activeSelf) {
+                    // to manipulate options
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
             }
             // Close the option window if clicked outside the window
             if (optionCanvas.activeSelf && Input.GetMouseButtonDown(0) && !optionWindow.ContainsMouseCursor()) {
                 optionCanvas.SetActive(false);
-            }
-        }
-        if (Game.Main.Phase == GamePhase.Top) {
-            if (resultBG.rectTransform.ContainsMouseCursor()) {
-                resultBG.color = new Color(1f, 1f, 1f, 0.5f);
-            } else {
-                resultBG.color = new Color(1f, 1f, 1f, 0.25f);
             }
         }
     }
