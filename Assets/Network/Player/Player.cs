@@ -51,7 +51,7 @@ public class Player : NetworkBehaviour
         compass.gameObject.SetActive(true);
         lifeTimer = TickTimer.CreateFromSeconds(Runner, 8f);
 
-        CameraManager.SetMainCameraParent(transform, new Vector3(0f, 2f, 0f));
+        CameraManager.SetMainCameraParent(transform);
         CameraManager.SetActiveCamera(true);
     }
 

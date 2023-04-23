@@ -47,9 +47,10 @@ public class CameraManager : MonoBehaviour
     /// Called by Player
     /// </summary>
     /// <param name="parent">player</param>
-    public static void SetMainCameraParent(Transform parent, Vector3 position) {
+    public static void SetMainCameraParent(Transform parent) {
         main.mainCameraParent.parent = parent;
-        main.mainCameraParent.localPosition = position;
+        main.mainCameraParent.localPosition = Vector3.zero;
+        main.mainCamera.transform.localPosition = new Vector3(0f, 5f, -10f);
     }
 
     /// <summary>
@@ -63,7 +64,7 @@ public class CameraManager : MonoBehaviour
     /// Called by Player
     /// </summary>
     public static void ForwardMainCamera(float amount) {
-        if (amount > 0 && main.mainCamera.transform.localPosition.z < -2f) return;
+        if (amount > 0 && main.mainCamera.transform.localPosition.z > 0f) return;
         main.mainCamera.transform.Translate(Vector3.forward * amount);
     }
 
