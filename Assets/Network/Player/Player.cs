@@ -119,6 +119,10 @@ public class Player : NetworkBehaviour
                 gravityVelocity = Parameter.JumpVelociy;
             }
 
+            if (input.Buttons.WasPressed(_buttonsPrevious, LocalButtons.Return)) {
+                transform.position = PositionManager.GetRandomPosition(1, true);
+            }
+
             _buttonsPrevious = input.Buttons;
         }
     }

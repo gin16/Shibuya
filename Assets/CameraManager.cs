@@ -29,6 +29,9 @@ public class CameraManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.C)) {
             SetActiveCamera(!mainCamera.enabled);
         }
+        if (Input.GetKeyDown(KeyCode.F)) {
+            main.mainCameraParent.localRotation = Quaternion.identity;
+        }
     }
 
     /// <summary>
