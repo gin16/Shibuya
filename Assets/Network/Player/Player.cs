@@ -22,6 +22,8 @@ public class Player : NetworkBehaviour
     [SerializeField] Transform positionPlane;
     [SerializeField] bool useGravity = true;
     float gravityVelocity = 0f;
+    float jumpingTime;
+    float jumpExtensionTime;
 
     bool registered = false;
 
@@ -115,7 +117,20 @@ public class Player : NetworkBehaviour
             float speed = Parameter.MoveSpeed;
             Move(new Vector3(input.HorizontalInput, 0f, input.VerticalInput) * speed);
 
-            if (input.Buttons.WasPressed(_buttonsPrevious, LocalButtons.Space) && OnGround()) {
+            if (input.Buttons.WasPressed(_buttonsPrevious, LocalButtons.Space)) {
+                jumpExtensionTime = Parameter.JumpExtensionTime;
+            } else if (jumpExtensionTime > 0f) {
+                jumpExtensionTime -= Runner.DeltaTime;
+            }
+
+            if (jumpExtensionTime > 0f && OnGround()) {
+                jumpExtensionTime = 0f;
+                jumpingTime = Parameter.JumpTime;
+            }
+            if (input.Buttons.WasReleased(_buttonsPrevious, LocalButtons.Space)) {
+                jumpingTime = 0f;
+            } else if (jumpingTime > 0f) {
+                jumpingTime -= Runner.DeltaTime;
                 gravityVelocity = Parameter.JumpVelociy;
             }
 

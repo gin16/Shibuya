@@ -15,6 +15,10 @@ public class Parameter : MonoBehaviour
     public static float MoveSpeed { get { return main?.moveSpeed ?? 0; }}
     [SerializeField] float jumpVelocity = 2f;
     public static float JumpVelociy { get { return main?.jumpVelocity ?? 0; }}
+    [SerializeField] float jumpTime = 2f;
+    public static float JumpTime { get { return main?.jumpTime ?? 0; }}
+    [SerializeField] float jumpExtensionTime = 2f;
+    public static float JumpExtensionTime { get { return main?.jumpExtensionTime ?? 0; }}
     [SerializeField] float inclineTolerance = 0.4f;
     public static float InclineTolerance { get { return main?.inclineTolerance ?? 0; }}
     [SerializeField] float gravityAcceleration = 9.8f;

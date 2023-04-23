@@ -7399,7 +7399,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 32
-  jumpVelocity: 2
+  jumpVelocity: 1
+  jumpTime: 0.5
+  jumpExtensionTime: 0.5
   inclineTolerance: 0.4
   gravityAcceleration: 4.9
   cameraDistance: 16
