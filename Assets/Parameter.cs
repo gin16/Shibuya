@@ -35,6 +35,12 @@ public class Parameter : MonoBehaviour
         return main.colors[index % main.colors.Length];
     }
 
+    public static Color GetColor(int index, float alpha) {
+        Color color = GetColor(index);
+        color.a = alpha;
+        return color;
+    }
+
     [SerializeField] Slider horizontalSensitivitySlider;
     [SerializeField] Toggle horizontalSensitivityToggle;
     public static float HorizontalSensitivity { get { return Mathf.Pow(2, main?.horizontalSensitivitySlider.value ?? 8) * (main?.horizontalSensitivityToggle.isOn ?? true ? 1 : -1); } }

@@ -15,9 +15,13 @@ public class Player : NetworkBehaviour
     NetworkArray<int> collections => default;
     [Networked] private int collectionsSize { get; set; }
     [Networked] public int Score { get; private set; }
-
+    const int TrailSize = 64;
+    [Networked] private int trailsSize { get; set; }
+    [Networked, Capacity(TrailSize)]
+    NetworkArray<Vector3> trailData => default;
+    List<Trail> trails = new List<Trail>();
+    bool trailTeleported;
     [SerializeField] Renderer[] renderers;
-    [SerializeField] Transform compass;
     [SerializeField] TMPro.TextMeshPro nameText;
     [SerializeField] Transform positionPlane;
     [SerializeField] bool useGravity = true;
@@ -50,7 +54,6 @@ public class Player : NetworkBehaviour
         networkTransform = GetComponent<NetworkTransform>();
 
         PlayerId = Runner.LocalPlayer.PlayerId;
-        compass.gameObject.SetActive(true);
         lifeTimer = TickTimer.CreateFromSeconds(Runner, 8f);
 
         CameraManager.SetMainCameraParent(transform);
@@ -64,10 +67,8 @@ public class Player : NetworkBehaviour
 
         if (!registered) {
             if (PlayerId < 0) return;
-            Color color = Parameter.GetColor(PlayerId);
-            color.a = 0.5f;
             foreach (Renderer renderer in renderers) {
-                renderer.material.color = color;
+                renderer.material.color = Parameter.GetColor(PlayerId, 0.75f);
             }
             registered = true;
         }
@@ -81,9 +82,13 @@ public class Player : NetworkBehaviour
             gameObject.SetActive(false);
         }
 
-        if (!Object.HasStateAuthority) return;
+        // Generate little by little so that the load does not become heavy
+        while (trails.Count < TrailSize) {
+            Trail trail = PlayerSpawner.RegisterTrail(Parameter.GetColor(PlayerId, 0.5f));
+            trails.Add(trail);
+        }
 
-        compass.rotation = Quaternion.identity;
+        if (!Object.HasStateAuthority) return;
 
         if (lifeTimer.RemainingTime(Runner) < 4f) {
             lifeTimer = TickTimer.CreateFromSeconds(Runner, 8f);
@@ -134,12 +139,14 @@ public class Player : NetworkBehaviour
                 gravityVelocity = Parameter.JumpVelociy;
             }
 
-            if (input.Buttons.WasPressed(_buttonsPrevious, LocalButtons.Return)) {
+            if (input.Buttons.WasPressed(_buttonsPrevious, LocalButtons.Return) && !CanvasManager.IsInputing()) {
                 transform.position = PositionManager.GetRandomPosition(1, true);
+                trailTeleported = true;
             }
 
             _buttonsPrevious = input.Buttons;
         }
+        SaveTrail();
     }
 
     private void RotateWithMouseCursor() {
@@ -213,10 +220,51 @@ public class Player : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// Save position and rotation
+    /// </summary>
+    private void SaveTrail() {
+        if (Game.Main.Phase == GamePhase.Game) {
+            if (trailsSize < TrailSize && trailsSize < Game.Main.GameTimeProgress * TrailSize) {
+                // Don't save if it hasn't moved much (distance 10 or less) since the last time
+                if (trailsSize > 0) {
+                    Vector3 delta = transform.position - trailData[trailsSize - 1];
+                    delta.y = 0f;
+                    if (delta.sqrMagnitude < 100) {
+                        return;
+                    }
+                }
+                Vector3 data = transform.position;
+                data.y = transform.rotation.eulerAngles.y;
+                trailData.Set(trailsSize, data);
+                trailsSize++;
+                SetTrail(true);
+                trailTeleported = false;
+            }
+
+        }
+    }
+
+    public void SetTrail(bool active) {
+        // Debug.Log($"{PlayerId} SetTrail {trailsSize} {trails.Count} {active}");
+        for (int i = 0; i < trails.Count; i++) {
+            trails[i].SetActive(i < trailsSize);
+            if (i < trailsSize) {
+                if (i == 0 || trailTeleported) {
+                    trails[i].SetPositionAndRotation(trailData[i]);
+                } else {
+                    trails[i].SetPositionAndRotation(trailData[i], trailData[i - 1]);
+                }
+            }
+        }
+    }
+
     public void Initialize() {
         if (!Object.HasStateAuthority) return;
         collectionsSize = 0;
         Score = 0;
+        trailsSize = 0;
+        trailTeleported = true;
     }
 
     public bool AddCoin(int value) {

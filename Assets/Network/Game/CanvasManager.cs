@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -60,7 +61,7 @@ public class CanvasManager : MonoBehaviour
     {
         if (Game.Main == null) return;
         if (Game.Main.Phase == GamePhase.Game || Game.Main.Phase == GamePhase.Top) {
-            if (Input.GetKeyDown(KeyCode.O)) {
+            if (Input.GetKeyDown(KeyCode.O) && !IsInputing()) {
                 optionCanvas.SetActive(!optionCanvas.activeSelf);
                 if (optionCanvas.activeSelf) {
                     // to manipulate options
@@ -94,5 +95,12 @@ public class CanvasManager : MonoBehaviour
     public string Colored(string str, int id) {
         string colorCode = "#" + ColorUtility.ToHtmlStringRGBA(Parameter.GetColor(id));
         return $"<color={colorCode}>{str}</color>";
+    }
+
+    /// <summary>
+    /// Returns whether a TMPro.TMP_InputField is currently being used
+    /// </summary>
+    public static bool IsInputing() {
+        return EventSystem.current.currentSelectedGameObject?.GetComponent<TMPro.TMP_InputField>() != null;
     }
 }

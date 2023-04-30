@@ -22,6 +22,11 @@ public class Game : NetworkBehaviour
     [SerializeField] GameOption coinNum;
     [SerializeField] GameOption gameTime;
     [Networked] TickTimer timer { get; set; }
+    /// <summary>
+    /// Game Time Progress.
+    /// 0 at the beginning, 1 at the end
+    /// </summary>
+    public float GameTimeProgress => (gameTime.Value - timer.RemainingTime(Runner) ?? 0) / gameTime.Value;
 
     private List<Coin> coins = new List<Coin>();
 
@@ -88,9 +93,11 @@ public class Game : NetworkBehaviour
             foreach (Coin coin in coins) {
                 coin.Show();
             }
+            playerSpawner.SetTrail(true);
         }
         if (Phase == GamePhase.Ready) {
             playerSpawner.LocalPlayer.PlayerName = canvasManager.UserName;
+            playerSpawner.SetTrail(false);
         }
         if (Phase == GamePhase.Game) {
             playerSpawner.LocalPlayer.Initialize();

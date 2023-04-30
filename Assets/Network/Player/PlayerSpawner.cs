@@ -15,6 +15,7 @@ public class PlayerSpawner : NetworkBehaviour
     public List<Player> players {get; private set; } = new List<Player>();
     public Player LocalPlayer { get; private set; }
 
+    [SerializeField] Trail trailPrefab;
     public override void Spawned() {
         Main = this;
         Vector3 spawnPosition = Random.insideUnitCircle * 1f;
@@ -46,5 +47,18 @@ public class PlayerSpawner : NetworkBehaviour
 
     public static Player GetPlayer(int playerId) {
         return Main.players.Find(p => p.PlayerId == playerId);
+    }
+
+    public static Trail RegisterTrail(Color color) {
+        Trail trail = Instantiate(Main.trailPrefab, Main.transform);
+        trail.SetColor(color);
+        trail.SetActive(false);
+        return trail;
+    }
+
+    public void SetTrail(bool active) {
+        foreach (Player player in players) {
+            player.SetTrail(active);
+        }
     }
 }

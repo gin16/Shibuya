@@ -9,6 +9,9 @@ public class CameraManager : MonoBehaviour
     [SerializeField] Transform mainCameraParent;
     [SerializeField] Camera mainCamera;
     [SerializeField] Camera mapCamera;
+    [SerializeField] Camera miniCamera;
+    [SerializeField] GameObject miniMapCanvas;
+    [SerializeField] RectTransform compass;
 
     void Awake ()
     {
@@ -26,12 +29,13 @@ public class CameraManager : MonoBehaviour
     void Update()
     {
         if (Game.Main == null) return;
-        if (Input.GetKeyDown(KeyCode.C)) {
+        if (Input.GetKeyDown(KeyCode.C) && !CanvasManager.IsInputing()) {
             SetActiveCamera(!mainCamera.enabled);
         }
-        if (Input.GetKeyDown(KeyCode.F)) {
+        if (Input.GetKeyDown(KeyCode.F) && !CanvasManager.IsInputing()) {
             main.mainCameraParent.localRotation = Quaternion.identity;
         }
+        compass.rotation = Quaternion.Euler(0f, 0f, miniCamera.transform.rotation.eulerAngles.y);
     }
 
     /// <summary>
@@ -41,6 +45,8 @@ public class CameraManager : MonoBehaviour
     public static void SetActiveCamera(bool isMain) {
         main.mainCamera.enabled = isMain;
         main.mapCamera.enabled = !isMain;
+        main.miniCamera.enabled = isMain;
+        main.miniMapCanvas.SetActive(isMain);
     }
 
     /// <summary>
@@ -51,6 +57,8 @@ public class CameraManager : MonoBehaviour
         main.mainCameraParent.parent = parent;
         main.mainCameraParent.localPosition = Vector3.zero;
         main.mainCamera.transform.localPosition = new Vector3(0f, 5f, -10f);
+        main.miniCamera.transform.parent = parent;
+        main.miniCamera.transform.localPosition = Vector3.zero;
     }
 
     /// <summary>
