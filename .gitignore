@@ -74,6 +74,10 @@ crashlytics-build.properties
 # vscode
 .vscode/
 
+# Font
+Assets/Font/NotoSansJP-Regular\ SDF.asset
+Assets/Font/NotoSansJP-Regular\ SDF.asset.meta
+
 # Shibuya
 /Shibuya/
 
